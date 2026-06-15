@@ -20,9 +20,129 @@
             font-weight: 300;
             letter-spacing: 0.05em;
         }
+
+        /* hamburger button */
+        .menu-toggle {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 30;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 1.5px;
+            background: #f5f5f5;
+            transition: transform 0.28s ease, opacity 0.2s ease;
+        }
+        .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+        .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+        /* menu panel */
+        .menu {
+            position: fixed;
+            top: 76px;
+            left: 24px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            min-width: 240px;
+            padding: 8px;
+            background: #141414;
+            border: 1px solid #262626;
+            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+        .menu.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .menu a {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            color: #f5f5f5;
+            text-decoration: none;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            transition: background 0.15s ease;
+        }
+        .menu a:hover { background: #1f1f1f; }
+        .menu a .label { font-size: 1rem; }
+        .menu a .meta { font-size: 0.8rem; color: #8a8a8a; letter-spacing: 0.04em; }
+        .menu .divider { height: 1px; background: #262626; margin: 6px 10px; }
     </style>
 </head>
 <body>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-controls="menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+
+    <nav class="menu" id="menu" aria-label="Navigation">
+        <a href="https://cv.mrmaier.com" target="_blank" rel="noopener">
+            <span class="label">CV</span>
+            <span class="meta">Resume</span>
+        </a>
+
+        <div class="divider" role="separator"></div>
+
+        <!-- later: https://ai.mrmaier.com -->
+        <a href="https://github.com/Dronnn/ai-from-the-ground-up" target="_blank" rel="noopener">
+            <span class="label">AI from the Ground Up</span>
+            <span class="meta">From a neuron to GPT · EN</span>
+        </a>
+        <!-- later: https://armenian.mrmaier.com -->
+        <a href="https://github.com/Dronnn/eastern-armenian-a0-b1" target="_blank" rel="noopener">
+            <span class="label">Eastern Armenian</span>
+            <span class="meta">A0 → B1 · RU</span>
+        </a>
+        <!-- later: https://german.mrmaier.com -->
+        <a href="https://github.com/Dronnn/german-a1-b2" target="_blank" rel="noopener">
+            <span class="label">German</span>
+            <span class="meta">A1 → B2 · RU</span>
+        </a>
+    </nav>
+
     <h1>Andreas Maier</h1>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('menuToggle');
+            var menu = document.getElementById('menu');
+            function setOpen(open) {
+                menu.classList.toggle('open', open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+            }
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                setOpen(!menu.classList.contains('open'));
+            });
+            document.addEventListener('click', function (e) {
+                if (menu.classList.contains('open') && !menu.contains(e.target)) setOpen(false);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') setOpen(false);
+            });
+        })();
+    </script>
 </body>
 </html>
